@@ -114,7 +114,7 @@ docker build -t mincoin-server .
 docker run -d -p 8080:8080 --name mincoin-server mincoin-server
 ```
 
-### Using Docker Compose
+### Using Docker Compose (Optional)
 
 Create a `docker-compose.yml` file:
 
