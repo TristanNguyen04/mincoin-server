@@ -1,5 +1,6 @@
 package org.example.service;
 
+import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,33 +12,47 @@ public class CoinService {
             throw new IllegalArgumentException("Target amount must be between 0 and 10000!");
         }
 
-        int[] coinInCents = new int[denominations.size()];
-
-        for(int i = 0; i < denominations.size(); i++){
-            int cents = (int) Math.round(denominations.get(i) * 100);
-            if(!isAllowedDenomination(denominations.get(i))){
-                throw new IllegalArgumentException("Invalid coin denomination: " + denominations.get(i));
-            }
-            coinInCents[i] = cents;
-        }
-
-        Arrays.sort(coinInCents);
-
         int targetInCents = (int) Math.round(amount * 100);
-        List<Double> result = new ArrayList<>();
 
-        for(int i = coinInCents.length - 1; i >= 0; i--){
-            while(targetInCents >= coinInCents[i]){
-                targetInCents -= coinInCents[i];
-                result.add(coinInCents[i] / 100.0);
+        List<Integer> coinInCents = new ArrayList<>();
+
+        for(Double d : denominations){
+            if(!isAllowedDenomination(d)){
+                throw new IllegalArgumentException("Invalid coin denomination: " + d);
+            }
+            coinInCents.add((int) Math.round(d * 100));
+        }
+
+        int[] dp = new int[targetInCents + 1];
+        int[] prevCoin = new int[targetInCents + 1];
+
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        Arrays.fill(prevCoin, -1);
+
+        dp[0] = 0;
+
+        for(int i = 1; i <= targetInCents; i++){
+            for(int coin : coinInCents){
+                if(i >= coin && dp[i - coin] != Integer.MAX_VALUE){
+                    if(dp[i] > dp[i - coin] + 1){
+                        dp[i] = dp[i - coin] + 1;
+                        prevCoin[i] = coin;
+                    }
+                }
             }
         }
 
-        if(targetInCents != 0){
+        if(dp[targetInCents] == Integer.MAX_VALUE){
             throw new IllegalArgumentException("Cannot make exact amount with given denominations.");
         }
 
-        Collections.reverse(result);
+        List<Double> result = new ArrayList<>();
+        int curr = targetInCents;
+        while(curr > 0){
+            int coin = prevCoin[curr];
+            result.add(coin / 100.0);
+            curr -= coin;
+        }
 
         return result;
     }
