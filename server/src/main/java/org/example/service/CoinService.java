@@ -12,6 +12,36 @@ public class CoinService {
             throw new IllegalArgumentException("Target amount must be between 0 and 10000!");
         }
 
+        // Initial Solution - Greedy Algorithm
+//        int[] coinInCents = new int[denominations.size()];Add commentMore actions
+//
+//        for(int i = 0; i < denominations.size(); i++){
+//            int cents = (int) Math.round(denominations.get(i) * 100);
+//            if(!isAllowedDenomination(denominations.get(i))){
+//                throw new IllegalArgumentException("Invalid coin denomination: " + denominations.get(i));
+//            }
+//            coinInCents[i] = cents;
+//        }
+//
+//        Arrays.sort(coinInCents);
+//
+//        int targetInCents = (int) Math.round(amount * 100);
+//        List<Double> result = new ArrayList<>();
+//
+//        for(int i = coinInCents.length - 1; i >= 0; i--){
+//            while(targetInCents >= coinInCents[i]){
+//                targetInCents -= coinInCents[i];
+//                result.add(coinInCents[i] / 100.0);
+//            }
+//        }
+//
+//        if(targetInCents != 0){
+//            throw new IllegalArgumentException("Cannot make exact amount with given denominations.");
+//        }
+//
+//        Collections.reverse(result);
+
+        // 2nd try - dynamic programming
         int targetInCents = (int) Math.round(amount * 100);
 
         List<Integer> coinInCents = new ArrayList<>();

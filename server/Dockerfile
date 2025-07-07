@@ -14,7 +14,7 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jdk-jammy
 
 # Set working directory
-WORKDIR /appp
+WORKDIR /app
 
 # Copy built JAR from builder stage
 COPY --from=builder /app/target/server-1.0-SNAPSHOT.jar app.jar
